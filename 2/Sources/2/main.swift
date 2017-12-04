@@ -14,20 +14,29 @@ catch {
 }
 
 var sum: Int = 0
+var part2Sum: Int = 0
 
 for row in input.split(separator: "\n") {
-    var rowMin: Int = Int.max
-    var rowMax: Int = Int.min
-    for column in row.components(separatedBy: ["\t"]) {
-        let colVal = Int(column)!
-        if colVal < rowMin {
-            rowMin = colVal
-        }
-        else if colVal > rowMax {
-            rowMax = colVal
+    let rowInt: [Int] = row.components(separatedBy: ["\t"]).map({number in Int(number)!})
+    let colCount = rowInt.count
+    sum += rowInt.max()! - rowInt.min()!
+
+
+    perRow: for (idx, val) in rowInt.enumerated() {
+        for nextIdx in idx + 1 ..< colCount {
+            let nextInt = rowInt[nextIdx]
+            if val % nextInt == 0 {
+                part2Sum += val / nextInt
+                break perRow
+            }
+            else if nextInt % val == 0 {
+                part2Sum += nextInt / val
+                break perRow
+            }
         }
     }
-    sum += (rowMax - rowMin)
+
 }
 
 print("Sum is \(sum)")
+print("Sum for part 2 is \(part2Sum)")
